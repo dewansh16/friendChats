@@ -9,7 +9,8 @@ import { FC, ReactNode } from "react";
 // import FriendRequestSidebarOptions from '@/components/FriendRequestSidebarOptions'
 import { fetchRedis } from "@/helpers/redis";
 import FriendRequestSidebarOptions from "@/components/FriendRequestSidebarOptions";
-// import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
+import { getFriendsByUserId } from "@/helpers/get-friends-by-user-id";
+import SidebarChatList from "@/components/SidebarChatList";
 // import SidebarChatList from '@/components/SidebarChatList'
 // import MobileChatLayout from '@/components/MobileChatLayout'
 // import { SidebarOption } from '@/types/typings'
@@ -44,8 +45,8 @@ const Layout = async ({ children }: LayoutProps) => {
   const session = await getServerSession(authOptions);
   if (!session) notFound();
 
-  //   const friends = await getFriendsByUserId(session.user.id)
-  //   console.log('friends', friends)
+  const friends = await getFriendsByUserId(session.user.id);
+  console.log("friends", friends);
 
   const unseenRequestCount = (
     (await fetchRedis(
@@ -70,15 +71,17 @@ const Layout = async ({ children }: LayoutProps) => {
           <Icons.Logo className="h-8 w-auto text-indigo-600" />
         </Link>
 
-        <div className="text-xs font-semibold leading-6 text-gray-400">
-          Your chats
-        </div>
+        {friends.length > 0 ? (
+          <div className="text-xs font-semibold leading-6 text-gray-400">
+            Your chats
+          </div>
+        ) : null}
 
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
-            {/* <li>
+            <li>
               <SidebarChatList sessionId={session.user.id} friends={friends} />
-            </li> */}
+            </li>
             <li>
               <div className="text-xs font-semibold leading-6 text-gray-400">
                 Overview
